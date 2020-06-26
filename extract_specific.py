@@ -1,6 +1,7 @@
-import pandas as pd
 import os
+
 import cv2
+import pandas as pd
 
 # %%
 
@@ -10,26 +11,35 @@ annotations_files = os.listdir(annotations_dir)
 
 event_features = ['eventID', 'event_type', 'duration', 'start_frame', 'end_frame', 'current_frame', 'bbox_lefttop x',
                   'bbox_lefttop y', 'bbox_width', 'bbox_height']
-object_features = ['Object id','object_duration','current_frame', 'bbox_lefttop x',
-                   'bbox_lefttop y', 'bbox_width', 'bbox_height','object_type']
-object_type = 1 # person
-event_type = 11 # person entering a facility
+object_features = ['Object id', 'object_duration', 'current_frame', 'bbox_lefttop x',
+                   'bbox_lefttop y', 'bbox_width', 'bbox_height', 'object_type']
+object_type = 1  # person
+event_type = 11  # person entering a facility
+events = ['1: Person loading an Object to a Vehicle',
+          '2: Person Unloading an Object from a Car/Vehicle',
+          '3: Person Opening a Vehicle/Car Trunk',
+          '4: Person Closing a Vehicle/Car Trunk',
+          '5: Person getting into a Vehicle',
+          '6: Person getting out of a Vehicle',
+          '7: Person gesturing',
+          '8: Person digging',
+          '9: Person carrying an object',
+          '10: Person running',
+          '11: Person entering a facility',
+          '12: Person exiting a facility']
 
-
-#%%
+# %%
 for annotations_file in annotations_files:
 	try:
 		if annotations_file.split('.')[2] == 'events':
 			test_file = annotations_dir + annotations_file
-			object_file = annotations_file.split('.')[0] +'.viratdata.objects.txt'
+			object_file = annotations_file.split('.')[0] + '.viratdata.objects.txt'
 			object_file = annotations_dir + object_file
 			object_df = pd.read_csv(object_file, delimiter=' ', names=object_features, index_col=False)
-			object_df = object_df[object_df['object_type']==object_type]
-
-
+			object_df = object_df[object_df['object_type'] == object_type]
 
 			event_df = pd.read_csv(test_file, delimiter=' ', names=event_features, index_col=False)
-			if (event_df['event_type'] == event_type                                                                                                                                                                                                                                                                                                                                                                        ).sum() > 0:
+			if (event_df['event_type'] == event_type).sum() > 0:
 
 				print(test_file)
 				video_file_name = annotations_file.split('.')[0] + '.mp4'
@@ -45,7 +55,7 @@ for annotations_file in annotations_files:
 					end_frame = row['end_frame']
 					current_frame = row['current_frame']
 					current_frame_objects = []
-					frame_filtered_objects = object_df[object_df['current_frame']==current_frame]
+					frame_filtered_objects = object_df[object_df['current_frame'] == current_frame]
 					if start_frame == current_frame:
 						cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
 
@@ -60,13 +70,11 @@ for annotations_file in annotations_files:
 						cv2.rectangle(frame, pt1, pt2, (0, 255, 0))
 
 					cv2.imshow("vid", frame)
-					cv2.resizeWindow('vid',600,600)
+					cv2.resizeWindow('vid', 600, 600)
 					cv2.waitKey(30)
 					start_frame += 1
-					break
 
-
-				#cv2.destroyWindow('vid')
+		# cv2.destroyWindow('vid')
 	except:
 		print('Error in: ')
 		print(annotations_file)
