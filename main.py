@@ -4,7 +4,7 @@ import cv2
 
 # %%
 
-dataset_root = 'VIRAT Ground Dataset'
+dataset_root = 'VIRAT Ground Dataset/'
 annotations_dir = dataset_root + 'annotations/'
 annotations_files = os.listdir(annotations_dir)
 
