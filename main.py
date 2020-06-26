@@ -30,6 +30,7 @@ for annotations_file in annotations_files:
 
 			event_df = pd.read_csv(test_file, delimiter=' ', names=event_features, index_col=False)
 			if (event_df['event_type'] == event_type                                                                                                                                                                                                                                                                                                                                                                        ).sum() > 0:
+
 				print(test_file)
 				video_file_name = annotations_file.split('.')[0] + '.mp4'
 				print(video_file_name)
@@ -59,11 +60,13 @@ for annotations_file in annotations_files:
 						cv2.rectangle(frame, pt1, pt2, (0, 255, 0))
 
 					cv2.imshow("vid", frame)
-					cv2.resizeWindow('vid',1280,720)
+					cv2.resizeWindow('vid',600,600)
 					cv2.waitKey(30)
-
 					start_frame += 1
-				cv2.destroyWindow('vid')
+					break
+
+
+				#cv2.destroyWindow('vid')
 	except:
 		print('Error in: ')
 		print(annotations_file)
